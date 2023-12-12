@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Word
+comment0.text=\r\n\ Word\ Object\r\n\r\n\ @author\ Freddy\ Smith\r\n
+comment1.params=word\ vec\ hex
+comment1.target=Word(java.lang.String,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Word\r\n
+comment2.params=
+comment2.target=java.lang.String\ getColor()
+comment3.params=
+comment3.target=java.lang.String\ getWord()
+comment4.params=
+comment4.target=int\ getVec()
+numComments=5
