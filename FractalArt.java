@@ -30,7 +30,7 @@ public class FractalArt extends Application
         displayer.switchFractal.setOnAction(event -> {
             int color = displayer.buttonPress();
             if(color==0){
-                gc.setFill(Color.BLUE);
+                gc.setFill(Color.BLUE); 
             }else if(color==1){
                 gc.setFill(Color.RED);
             }else if(color==2){
