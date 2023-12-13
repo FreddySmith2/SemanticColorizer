@@ -16,8 +16,13 @@ import javafx.scene.text.*;
 import javafx.scene.paint.Color.*;
 import javafx.scene.paint.Color;
 import java.text.*;
+import java.util.*;
 import javafx.scene.text.Font.*;
 import javafx.scene.shape.Shape.*;
+import javafx.scene.control.Slider;
+import java.util.ArrayList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 public class Displayer extends VBox
 {
@@ -28,11 +33,20 @@ public class Displayer extends VBox
     TextField textin;
     TextFlow sentence;
     Pane root;
+    ArrayList<String> sentenceUnits;
+    DictionarySearch dict;
     public Displayer() throws ParseException, java.io.IOException, org.json.simple.parser.ParseException
     {
-        DictionarySearch dict = new DictionarySearch();
+        dict = new DictionarySearch();
         root = new Pane();
         StackPane holder = new StackPane();
+        
+        Slider sliderHue = new Slider(0, 360, 0);
+        //Slider slider
+        sliderHue.setShowTickMarks(true);
+        sliderHue.setShowTickLabels(true);
+        
+        sentenceUnits = new ArrayList<String>();
         
         textin = new TextField();
         texta = new Label("");
@@ -44,27 +58,104 @@ public class Displayer extends VBox
         
         holder.getChildren().add(canvas);
         root.getChildren().add(holder);
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>(){
-            public void handle(ActionEvent e)
+        // EventHandler<ActionEvent> event = new EventHandler<ActionEvent>(){
+            // public void handle(ActionEvent e)
+            // {
+                // Text temp = new Text("");
+                // Label text = new Label("");
+                // temp.setText(textin.getText());
+                // String word = temp.getText();
+                // try{temp.setFill(Color.web(dict.getHSLFromKey(word)));}
+                // catch(Exception l){}
+                // //texta.setText(""+dict.getValueFromKey(word)+", = "+dict.getHSLFromKey(word));
+                // text.setText(" ");
+                // //sentence.getChildren().add(texta);
+                // sentence.getChildren().add(temp);
+                // sentence.getChildren().add(text);
+            // }
+        // };
+        
+        sliderHue.valueProperty().addListener(
+            new ChangeListener<Number>() {
+                public void changed(ObservableValue <? extends Number >
+                    observable, Number oldValue, Number newValue)
+                    
             {
-                Text temp = new Text("");
-                Label text = new Label("");
-                temp.setText(textin.getText());
-                String word = temp.getText();
-                try{temp.setFill(Color.web(dict.getHSLFromKey(word)));}
-                catch(Exception l){}
-                //texta.setText(""+dict.getValueFromKey(word)+", = "+dict.getHSLFromKey(word));
-                text.setText(" ");
-                //sentence.getChildren().add(texta);
-                sentence.getChildren().add(temp);
-                sentence.getChildren().add(text);
+                //newValue
+                dict.setHueShift((Double)newValue);
+                sentence.getChildren().removeAll();
+                sentenceUpdate();
+                getChildren().addAll(textin, sliderHue, sentence, root);
+            }
+        });
+        
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent e){
+                String input = textin.getText();
+                stringToArray(input);
+                for(String i : sentenceUnits){
+                    Text temp = new Text("");
+                    temp.setText(i);
+                    try{temp.setFill(Color.web(dict.getHSLFromKey(i)));}
+                    catch(Exception l){}
+                    sentence.getChildren().add(temp);
+                }
+                
+                //add textin to a string. parse the string for words, an array list.
+                //array list goes and adds each word to sentence
             }
         };
+        
+        
+        
         //holder.setStyle("-fx-background-color: grey");
         textin.setOnAction(event);
         
         
-        getChildren().addAll(textin, sentence, root);
+        getChildren().addAll(textin, sliderHue, sentence, root);
+    }
+    
+    public void sentenceUpdate(){
+        for(String i : sentenceUnits){
+            Text temp = new Text("");
+            temp.setText(i);
+            try{temp.setFill(Color.web(dict.getHSLFromKey(i)));}
+            catch(Exception l){}
+            sentence.getChildren().add(temp);
+        }
+    }
+    
+    public void stringToArray(String input){
+        int length = input.length();
+        input = input.toLowerCase();
+        ArrayList<String> output = new ArrayList<String>();
+        String temp = "";
+        char[] letter = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+        for(int i = 0; i < length; i++){
+            if(charIn(letter, input.charAt(i))){
+                while(charIn(letter, input.charAt(i))){
+                    temp=temp+input.charAt(i);
+                    i++;
+                }
+                sentenceUnits.add(temp);
+                temp="";
+                i--;
+            }else{
+                temp=""+ input.charAt(i);
+                
+                sentenceUnits.add(temp);
+                temp="";
+            }
+        }
+    }
+    
+    public boolean charIn(char[] list, char a){
+        for(char i : list){
+            if(a==i){
+                return true;
+            }
+        }
+        return false;
     }
     
     //

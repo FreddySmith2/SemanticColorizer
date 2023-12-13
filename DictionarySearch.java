@@ -14,6 +14,8 @@ public class DictionarySearch{
     
     public ArrayList<Long> sortedValues;
     
+    public int hueShift;
+    
     public DictionarySearch() throws ParseException, java.io.IOException {
         Object obj = new JSONParser().parse(new FileReader("word_list.json"));
         
@@ -38,6 +40,7 @@ public class DictionarySearch{
         //vowelsInARow();
         vowelToConsRatio();
         sortedValues = wordSortByValue();
+        hueShift = 0;
         
     }
     
@@ -59,6 +62,7 @@ public class DictionarySearch{
     }
     
     public String getHSLFromKey(String key){
+        key = key.toLowerCase();
         return intToHSL(compressor(words.get(key)), words.get(key));
     }
     
@@ -72,13 +76,18 @@ public class DictionarySearch{
         return i;
     }
     
+    public void setHueShift(Double value){
+        hueShift = value.intValue();
+    }
+    
     public String intToHSL(int value, Long inVal){
         String output = "";
         
         
         
         double s = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
-        double l = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
+        //double l = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
+        double l = Math.pow((double)inVal, 1.0 / 4.1);
         double p = Math.abs(s-50)/2;
         double q = Math.abs(l-50)/2;
         if(s>50){
@@ -97,11 +106,19 @@ public class DictionarySearch{
         double a = 180;//graph adjusters
         double b = 2.8;
         value = 16777216-value;
-        
+        double o = 881;
         //double x = a*Math.pow(-Math.log(1-(double) value / 16777216), 1 / b);
-        double x = (double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/360);
+        //double x = (double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/360);
+        
+        //double x = Math.sqrt((double)inVal / o); // 
+        double x = Math.pow((double)inVal, 1.0 / 2.9);
+        
         if(x>360){
             x=360;
+        }
+        x=x+hueShift;
+        if(x>360){
+            x=x-360;
         }
         int h = (int) x;
         
@@ -118,7 +135,7 @@ public class DictionarySearch{
     }
     
     public int compressor(Long value){
-        double out = value/9.05893045;
+        double out = (double) value/9.05893045;
         out = (16777216-out)+1;
         //value = value/10;
         //value = (16777216-value)-1578853;
