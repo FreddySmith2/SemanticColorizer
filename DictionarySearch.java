@@ -14,6 +14,8 @@ public class DictionarySearch{
     
     public ArrayList<Long> sortedValues;
     
+    public int lightMod;
+    public int satMod;
     public int hueShift;
     
     public DictionarySearch() throws ParseException, java.io.IOException {
@@ -41,7 +43,8 @@ public class DictionarySearch{
         vowelToConsRatio();
         sortedValues = wordSortByValue();
         hueShift = 0;
-        
+        lightMod = 100;
+        satMod = 100;
     }
     
     public ArrayList<Long> wordSortByValue(){
@@ -80,24 +83,33 @@ public class DictionarySearch{
         hueShift = value.intValue();
     }
     
+    public void setLightMod(Double value){
+        lightMod = value.intValue();
+    }
+    
+    public void setSatMod(Double value){
+        satMod = value.intValue();
+    }
+    
     public String intToHSL(int value, Long inVal){
         String output = "";
         
         
         
-        double s = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
+        //double s = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
+        double s = Math.pow((double)inVal, 1.0 / satMod);
         //double l = (double)100-((double) getIndexOfSortedValue(inVal) / ((double)((double) sortedValues.size())/100));
-        double l = Math.pow((double)inVal, 1.0 / 4.1);
+        double l = Math.pow((double)inVal, 1.0 / lightMod);
         double p = Math.abs(s-50)/2;
         double q = Math.abs(l-50)/2;
         if(s>50){
-            s=s-p;
+            //s=s-p;
         }else{
             s=s+p+(p/2);
         }
         
         if(l>50){
-            l=l-q;
+            //l=l-q;
         }else{
             l=l+q+(q/2);
         }
@@ -122,12 +134,24 @@ public class DictionarySearch{
         }
         int h = (int) x;
         
-        int sO = (int)s;
-        int lO = (int)l;
+        int sO = satMod-(int)s;
+        int lO = lightMod-(int)l;
+        if(sO>100){
+            sO=100;
+        }
+        if(lO>100){
+            lO=100;
+        }
+        if(sO<0){
+            sO=0;
+        }
+        if(lO<0){
+            lO=0;
+        }
         if(sO>100||sO<0||lO>100||lO<0){
             throw new RuntimeException();
         }
-        output = h+", "+100+"%, "+lO+"%";
+        output = h+", "+sO+"%, "+lO+"%";
         //151983633
         //range of 270 hues
         //int s and l higher at lower numbers etc

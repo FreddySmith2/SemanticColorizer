@@ -42,9 +42,14 @@ public class Displayer extends VBox
         StackPane holder = new StackPane();
         
         Slider sliderHue = new Slider(0, 360, 0);
-        //Slider slider
+        Slider sliderLight = new Slider(0, 200, 100);
+        Slider sliderSat = new Slider(0, 200, 100);
         sliderHue.setShowTickMarks(true);
         sliderHue.setShowTickLabels(true);
+        sliderLight.setShowTickMarks(true);
+        sliderLight.setShowTickLabels(true);
+        sliderSat.setShowTickMarks(true);
+        sliderSat.setShowTickLabels(true);
         
         sentenceUnits = new ArrayList<String>();
         
@@ -55,6 +60,7 @@ public class Displayer extends VBox
         canvas = new Canvas(800, 800);
         //canvas.setFill();
         sentence = new TextFlow();
+        //Group outText = new Group();
         
         holder.getChildren().add(canvas);
         root.getChildren().add(holder);
@@ -84,8 +90,42 @@ public class Displayer extends VBox
                 //newValue
                 dict.setHueShift((Double)newValue);
                 sentence.getChildren().removeAll();
+                sentence.getChildren().clear();
+                //getChildren().clear();
                 sentenceUpdate();
-                getChildren().addAll(textin, sliderHue, sentence, root);
+                
+            }
+        });
+        
+        sliderLight.valueProperty().addListener(
+            new ChangeListener<Number>() {
+                public void changed(ObservableValue <? extends Number >
+                    observable, Number oldValue, Number newValue)
+                    
+            {
+                //newValue
+                dict.setLightMod((Double)newValue);
+                sentence.getChildren().removeAll();
+                sentence.getChildren().clear();
+                //getChildren().clear();
+                sentenceUpdate();
+                
+            }
+        });
+        
+        sliderSat.valueProperty().addListener(
+            new ChangeListener<Number>() {
+                public void changed(ObservableValue <? extends Number >
+                    observable, Number oldValue, Number newValue)
+                    
+            {
+                //newValue
+                dict.setSatMod((Double)newValue);
+                sentence.getChildren().removeAll();
+                sentence.getChildren().clear();
+                //getChildren().clear();
+                sentenceUpdate();
+                
             }
         });
         
@@ -93,6 +133,9 @@ public class Displayer extends VBox
             public void handle(ActionEvent e){
                 String input = textin.getText();
                 stringToArray(input);
+                sentence.getChildren().removeAll();
+                //sentenceUnitClear();
+                sentence.getChildren().clear();
                 for(String i : sentenceUnits){
                     Text temp = new Text("");
                     temp.setText(i);
@@ -112,7 +155,11 @@ public class Displayer extends VBox
         textin.setOnAction(event);
         
         
-        getChildren().addAll(textin, sliderHue, sentence, root);
+        getChildren().addAll(textin, sliderHue, sliderSat, sliderLight, sentence, root);
+    }
+    
+    public void sentenceUnitClear(){
+        sentenceUnits = new ArrayList<String>();
     }
     
     public void sentenceUpdate(){
