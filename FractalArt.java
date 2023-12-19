@@ -46,7 +46,7 @@ public class FractalArt extends Application
         });
         
         
-        stage.setTitle("canvas");
+        stage.setTitle("Semantic Colorizer");
         stage.setScene(scene);
         stage.show();
     }

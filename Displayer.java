@@ -28,6 +28,7 @@ public class Displayer extends VBox
 {
     public Button switchFractal;
     public Canvas canvas;
+    public Button resetAll;
     int whichFractal;
     Label texta;
     TextField textin;
@@ -40,6 +41,10 @@ public class Displayer extends VBox
         dict = new DictionarySearch();
         root = new Pane();
         StackPane holder = new StackPane();
+        resetAll = new Button("Clear Display");
+        Label sliderH = new Label("Hue Shift:");
+        Label sliderL = new Label("Lightness Offset:");
+        Label sliderS = new Label("Saturation Offset:");
         
         Slider sliderHue = new Slider(0, 360, 0);
         Slider sliderLight = new Slider(0, 200, 100);
@@ -64,6 +69,14 @@ public class Displayer extends VBox
         
         holder.getChildren().add(canvas);
         root.getChildren().add(holder);
+        
+        resetAll.setOnAction(event -> {
+           sentence.getChildren().removeAll();
+            sentence.getChildren().clear();
+        });
+        
+        
+        
         // EventHandler<ActionEvent> event = new EventHandler<ActionEvent>(){
             // public void handle(ActionEvent e)
             // {
@@ -155,7 +168,7 @@ public class Displayer extends VBox
         textin.setOnAction(event);
         
         
-        getChildren().addAll(textin, sliderHue, sliderSat, sliderLight, sentence, root);
+        getChildren().addAll(textin, sliderH, sliderHue, sliderS, sliderSat, sliderL, sliderLight, resetAll, sentence, root);
     }
     
     public void sentenceUnitClear(){
