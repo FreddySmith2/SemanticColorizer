@@ -50,4 +50,6 @@ public class FractalArt extends Application
         stage.setScene(scene);
         stage.show();
     }
+    
+    
 }
